@@ -58,6 +58,7 @@ based on the top 50 differentially expressed markers per cluster:
 
 ### 3. Differential Abundance — PR vs SD
 - Barplot of CD8 cluster proportions by pathologic response
+- Fisher's exact test with BH correction on cluster proportions (PR vs SD)
 
 ### 4. Pseudotime Trajectory — Slingshot
 - Lineage inference across CD8 functional states
@@ -77,18 +78,30 @@ based on the top 50 differentially expressed markers per cluster:
 ---
 
 ## Key findings
-- CD8_Exhausted_Terminal cells appear more enriched in SD compared to PR samples, consistent with a higher exhaustion burden in non-responders
-- The Exhaustion Terminal Score tends to be higher in SD, suggesting a possible link between terminal exhaustion and reduced response to anti-PD-1
-- TIGIT and PDCD1 expression patterns in SD resemble those observed in LUAD tumor tissue, pointing to shared exhaustion features across contexts
-- CellChat analysis suggests slightly stronger overall interactions in SD vs. PR (269.2 vs. 250.8), with CD8_Exhausted_Terminal cells showing broader predicted outgoing signaling toward TAMs and monocytes in SD, notably via MHC-I and CCL5-CCR1 axes
--These observations are exploratory and would require larger cohorts and functional validation to draw firm conclusions
+- CD8_Exhausted_Terminal cells appear more enriched in PR compared to SD samples 
+  (Fisher's exact test, OR=32.1, p_adj<0.001), suggesting that exhausted-phenotype 
+  cells capable of PD-1 reactivation are more prevalent in responders
+- CD8_IFN_Stress_Response and CD8_Terminal_CX3CR1 are significantly enriched in SD 
+  (p_adj<0.001), pointing to dysfunctional, stress-associated states in non-responders
+- The Exhaustion Terminal Score does not show a consistent directional pattern between 
+  PR and SD when computed across all CD8 cells, likely reflecting the higher abundance 
+  of CD8_Exhausted_Terminal cells in PR
+- CellChat analysis suggests stronger predicted interactions between CD8_Exhausted_Terminal 
+  cells and immunosuppressive TAMs in SD, notably via PPIA-BSG and PTPRC-MRC1 axes
+- CCL5-CCR1 interactions are preserved in PR, consistent with maintained effector signaling 
+  in responders
+- These observations are exploratory and would require larger cohorts and functional 
+  validation to draw firm conclusions
 
 ---
 
 ## Project Structure
 ```
 Dataset2_Immunotherapy/
-
+├── Data/
+│   └── raw count matrices (GSE207422)
+├── Objects/
+│   └── Seurat objects (.rds)
 ├── Scripts/
 │   └── R scripts (numbered pipeline)
 └── Results/

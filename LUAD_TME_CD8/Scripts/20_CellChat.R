@@ -40,7 +40,7 @@ p1 <- compareInteractions(
   cc_merged,
   show.legend = FALSE,
   group       = c(1, 2),
-  measure     = "count"
+  measure     = "weight"
 )
 ggsave(file.path(fig_dir, "19a_CellChat_interactions_count.png"),
        p1, width = 6, height = 5, dpi = 300, bg = "white")
@@ -76,17 +76,17 @@ p_bubble <- ggplot(df_all,
   facet_wrap(~ condition, ncol = 1) +
   theme_bw(base_size = 13) +
   theme(
-    axis.text.x  = element_text(angle = 45, hjust = 1, size = 11, color = "black"),
-    axis.text.y  = element_text(size = 11, color = "black"),
-    strip.text   = element_text(size = 13, face = "bold", color = "black"),
-    legend.title = element_text(size = 11, color = "black"),
-    legend.text  = element_text(size = 10, color = "black"),
-    plot.title   = element_text(size = 14, face = "bold", color = "black")
+    axis.text.x  = element_text(angle = 45, hjust = 1, size = 13, color = "#000000"),
+    axis.text.y  = element_text(size = 13, color = "#000000"),
+    strip.text   = element_text(size = 13, face = "bold", color = "#000000"),
+    legend.title = element_text(size = 11, color = "#000000"),
+    legend.text  = element_text(size = 10, color = "#000000"),
+    plot.title   = element_text(size = 14, face = "bold", color = "#000000")
   ) +
   labs(x = "", y = "",
        title = "CD8_TRM_Cytotoxic interactions — nLung vs tLung")
 
 ggsave(file.path(fig_dir, "19b_CellChat_bubble_nLung_tLung.png"),
-       p_bubble, width = 14, height = 8, dpi = 300, bg = "white")
+       p_bubble, width = 14, height = 10, dpi = 450, bg = "white")
 
 cat("\nCellChat LUAD figures saved\n")

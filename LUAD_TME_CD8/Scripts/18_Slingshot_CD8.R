@@ -25,10 +25,10 @@ dir.create(fig_dir, showWarnings = FALSE, recursive = TRUE)
 # Palette définitive
 # -----------------------------
 cluster_colors <- c(
-  "CD8_Naive_CM"       = "#5BC8D4",
-  "CD8_Effector_GZMK"  = "#FD8D3C",
-  "CD8_TRM_Cytotoxic"  = "#D73027",
-  "CD8_Proliferating"  = "#9970AB"
+  "CD8_Naive_CM"       = "#A8D8E8",  
+  "CD8_Effector_GZMK"  = "#FDBB84",  
+  "CD8_TRM_Cytotoxic"  = "#D73027",  
+  "CD8_Proliferating"  = "#CBC9E2"   
 )
 
 # -----------------------------

@@ -21,10 +21,10 @@ dir.create(fig_dir, showWarnings = FALSE, recursive = TRUE)
 # Palette — same 4 clusters as LUAD
 # -----------------------------
 cluster_colors <- c(
-  "CD8_Effector_GZMK"      = "#5BC8D4",
-  "CD8_Exhausted_Terminal" = "#FD8D3C",
-  "CD8_TRM_like"           = "#D73027",
-  "CD8_Proliferating"      = "#9970AB"
+  "CD8_Effector_GZMK"      = "#92C5DE",
+  "CD8_Exhausted_Terminal" = "#D73027",
+  "CD8_TRM_like"           = "#D6A5A5",
+  "CD8_Proliferating"      = "#CBC9E2"
 )
 
 # -----------------------------

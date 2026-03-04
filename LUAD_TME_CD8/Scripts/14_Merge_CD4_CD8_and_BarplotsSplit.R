@@ -33,16 +33,14 @@ out_pdf <- file.path(fig_dir, "18_CD4_CD8_states_barplot_splitByCondition.pdf")
 # Reproducible palette (REUSE this exact block in Immunotherapy)
 # ============================================================
 state_cols <- c(
-  # ---- CD4 ----
-  "CD4_Naive_CM"           = "#2166AC",
-  "CD4_Effector_Th1_like"  = "#F97B2B",
-  "Treg_Activated"         = "#F4A7C3",
+  "CD4_Naive_CM"          = "#2166AC",
+  "CD4_Effector_Th1_like" = "#F97B2B",
+  "Treg_Activated"        = "#F4A7C3",
   
-  # ---- CD8 ----
-  "CD8_Naive_CM"        = "#5BC8D4",
-  "CD8_Effector_GZMK"   = "#FD8D3C",
-  "CD8_TRM_Cytotoxic"   = "#D73027",
-  "CD8_Proliferating"   = "#9970AB"
+  "CD8_Naive_CM"       = "#A8D8E8",  
+  "CD8_Effector_GZMK"  = "#FDBB84",  
+  "CD8_TRM_Cytotoxic"  = "#D73027",  
+  "CD8_Proliferating"  = "#CBC9E2"   
 )
 
 # Optional: define stable order (useful for legend + stacks)
@@ -120,10 +118,36 @@ p <- ggplot(df, aes(x = Sample_Origin, y = Percent, fill = state)) +
     axis.text.y = element_text(size = 12),
     strip.text  = element_text(size = 14, face = "bold"),
     legend.title = element_blank(),
-    legend.text = element_text(size = 12)
+    legend.text  = element_text(size = 12),
+    legend.key.size = unit(5, "mm"),
+    legend.spacing.y = unit(0.4, "cm")
   )
 
-ggsave(out_png, plot = p, width = 8, height = 8, dpi = 300)
+cd8_only_cols <- state_cols[names(state_cols) %in% 
+                              c("CD8_Naive_CM", "CD8_Effector_GZMK", 
+                                "CD8_TRM_Cytotoxic", "CD8_Proliferating")]
+
+p_cd8_only <- ggplot(df %>% filter(panel == "CD8"),
+                     aes(x = Sample_Origin, y = Percent, fill = state)) +
+  geom_bar(stat = "identity", width = 0.85) +
+  scale_fill_manual(values = cd8_only_cols, drop = TRUE) +
+  theme_bw() +
+  ylab("Percentage of cells") +
+  xlab("") +
+  theme(
+    axis.text.x  = element_text(size = 14, face = "bold", angle = 45, hjust = 1),
+    axis.text.y  = element_text(size = 12),
+    legend.title = element_blank(),
+    legend.text  = element_text(size = 13),
+    legend.key.size = unit(6, "mm"),
+    legend.spacing.y = unit(0.6, "cm")
+  )
+
+ggsave(file.path(fig_dir, "18_CD8_states_barplot_splitByCondition.png"),
+       p_cd8_only, width = 7, height = 6, dpi = 450, bg = "white")
+
+
+ggsave(out_png, plot = p, width = 8, height = 8, dpi = 450)
 ggsave(out_pdf, plot = p, width = 8, height = 8)
 
 # -----------------------------

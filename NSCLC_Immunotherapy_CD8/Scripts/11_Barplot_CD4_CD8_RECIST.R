@@ -25,14 +25,14 @@ cd4_colors <- c(
 )
 
 cd8_colors <- c(
-  "CD8_Effector_GZMK"             = "#1f78b4",
-  "CD8_Exhausted_Terminal"        = "#D73027",
-  "CD8_Terminal_CX3CR1"           = "#FC8D59",
-  "CD8_Proliferating"             = "#9970AB",
-  "CD8_TRM_like"                  = "#8B0000",
-  "CD8_Early_Activated_NR4A_high" = "#74c476",
-  "CD8_Activated_HLAII_high"      = "#BCBD22",
-  "CD8_IFN_Stress_Response"       = "#17BECF"
+  "CD8_Effector_GZMK"             = "#92C5DE",  
+  "CD8_Exhausted_Terminal"        = "#D73027",  
+  "CD8_Terminal_CX3CR1"           = "#FDBB84",  
+  "CD8_Proliferating"             = "#CBC9E2",  
+  "CD8_TRM_like"                  = "#D6A5A5",  
+  "CD8_Early_Activated_NR4A_high" = "#A1D99B",  
+  "CD8_Activated_HLAII_high"      = "#D9D97A",  
+  "CD8_IFN_Stress_Response"       = "#A8D8E8"   
 )
 
 # ============================================================

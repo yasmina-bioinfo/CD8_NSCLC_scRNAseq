@@ -74,10 +74,10 @@ if (any(is.na(seu_cd8$CD8_state))) {
 # Palette (distinct, readable)
 # -----------------------------
 cd8_cols <- c(
-  "CD8_Naive_CM"       = "#5BC8D4",  
-  "CD8_Effector_GZMK"  = "#FD8D3C",
-  "CD8_TRM_Cytotoxic"  = "#D73027",
-  "CD8_Proliferating"  = "#9970AB"
+  "CD8_Naive_CM"       = "#A8D8E8",  
+  "CD8_Effector_GZMK"  = "#FDBB84",  
+  "CD8_TRM_Cytotoxic"  = "#D73027",  
+  "CD8_Proliferating"  = "#CBC9E2"   
 )
 
 # -----------------------------
@@ -109,7 +109,7 @@ p_umap <- DimPlot(
 ) + theme_bw()
 
 ggsave(file.path(fig_dir, "15_CD8_UMAP_states.png"),
-       plot = p_umap, width = 7, height = 6, dpi = 300)
+       plot = p_umap, width = 7, height = 6, dpi = 450)
 ggsave(file.path(fig_dir, "15_CD8_UMAP_states.pdf"),
        plot = p_umap, width = 7, height = 6)
 
@@ -124,10 +124,19 @@ p_umap_split <- DimPlot(
   cols = cd8_cols,
   label = TRUE,
   ncol = 2
-) + theme_bw()
+) + 
+  theme_bw() +
+  theme(
+    legend.text = element_text(size = 13),
+    legend.key.size = unit(6, "mm"),
+    legend.spacing.y = unit(0.5, "cm"),
+    strip.text = element_text(size = 13, face = "bold"),
+    axis.text = element_text(size = 11),
+    axis.title = element_text(size = 12)
+  )
 
 ggsave(file.path(fig_dir, "15_CD8_UMAP_states_splitByCondition.png"),
-       plot = p_umap_split, width = 12, height = 6, dpi = 300)
+       plot = p_umap_split, width = 12, height = 6, dpi = 450)
 ggsave(file.path(fig_dir, "15_CD8_UMAP_states_splitByCondition.pdf"),
        plot = p_umap_split, width = 12, height = 6)
 
@@ -157,7 +166,7 @@ p_dot <- DotPlot(
   )
 
 ggsave(file.path(fig_dir, "15_CD8_DotPlot_states_splitByCondition.png"),
-       plot = p_dot, width = 12, height = 6, dpi = 300)
+       plot = p_dot, width = 12, height = 6, dpi = 450)
 ggsave(file.path(fig_dir, "15_CD8_DotPlot_states_splitByCondition.pdf"),
        plot = p_dot, width = 12, height = 6)
 

@@ -145,7 +145,7 @@ Quality Control + Normalization (Seurat)
         ↓
 T cell Subclustering → CD8 Annotation (top 50 markers)
         ↓
-Differential Abundance — PR vs. SD (barplot)
+Differential Abundance — PR vs. SD (barplot + Fisher's exact test, BH correction)
         ↓
 Pseudotime Trajectory (Slingshot)
         ↓
@@ -158,11 +158,17 @@ Cross-Dataset Synthesis (TIGIT, PDCD1, Exhaustion Score)
 ```
 
 ### Key Observations
-- CD8_Exhausted_Terminal cells appear more enriched in SD vs. PR samples
-- Exhaustion Terminal Score tends to be higher in SD, suggesting a possible link between terminal exhaustion and reduced response to anti-PD-1
-- CD8_Exhausted_Terminal cells show stronger predicted interactions with TAMs in SD (MHC-I, CCL5-CCR1 axes)
-- These observations are exploratory and would require larger cohorts and functional validation
-- CellChat analysis suggests slightly stronger overall interactions in SD vs. PR (269.2 vs. 250.8)
+- CD8_Exhausted_Terminal cells appear more enriched in PR compared to SD samples 
+  (Fisher's exact test, OR=32.1, p_adj<0.001), suggesting that exhausted-phenotype 
+  cells capable of PD-1 reactivation are more prevalent in responders
+- CD8_IFN_Stress_Response and CD8_Terminal_CX3CR1 are significantly enriched in SD 
+  (p_adj<0.001), pointing to dysfunctional stress-associated states in non-responders
+- CD8_Exhausted_Terminal cells show stronger predicted interactions with TAMs in SD, 
+  notably via PPIA-BSG and PTPRC-MRC1 axes
+- CCL5-CCR1 interactions are preserved in PR, consistent with maintained effector 
+  signaling in responders
+- These observations are exploratory and would require larger cohorts and functional 
+  validation
 
 ### Analytical Notes and Limitations
 - Small and unbalanced patient numbers (PR n=10 samples, SD n=6 samples)
@@ -173,9 +179,17 @@ Cross-Dataset Synthesis (TIGIT, PDCD1, Exhaustion Score)
 
 ## Cross-Dataset Synthesis
 
-To bridge the two analyses, TIGIT and PDCD1 expression were visualized across all four conditions (nLung / tLung / PR / SD) in a unified 4-panel FeaturePlot. An Exhaustion Terminal Module Score was computed using the same gene signature in both datasets.
+To bridge the two analyses, TIGIT and PDCD1 expression were visualized across all four 
+conditions (nLung / tLung / PR / SD). An Exhaustion Terminal Module Score was computed 
+using the same gene signature in both datasets. A direct cross-dataset comparison of 
+CellChat interaction probabilities was attempted for CCL5–CCR1 and PPIA–BSG axes but 
+did not yield consistent directional patterns, likely reflecting differences in dataset 
+size, cell composition, and biological context. Full results are available in the 
+repository. Computational constraints required downsampling of the LUAD dataset to 
+~41,000 cells, which may have influenced cross-dataset comparisons.
 
 **Shared exhaustion signature genes:** PDCD1, TIGIT, HAVCR2, LAG3, CTLA4, ENTPD1, LAYN, PRDM1
+
 
 The convergence of expression patterns between tLung (LUAD) and SD (immunotherapy) suggests that tumor-associated CD8 exhaustion observed in the LUAD microenvironment may carry functional relevance for immunotherapy response. This interpretation remains hypothesis-generating.
 

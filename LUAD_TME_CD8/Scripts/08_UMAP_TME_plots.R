@@ -86,7 +86,7 @@ ggplot2::ggsave(
   plot = p_major,
   width = 8,
   height = 6,
-  dpi = 400,
+  dpi = 450,
   bg = "white"
 )
 
@@ -109,7 +109,7 @@ if ("Cell_type.refined" %in% colnames(obj@meta.data)) {
   
   ggplot2::ggsave(
     filename = file.path(fig_dir, "UMAP_celltype_refined.png"),
-    plot = p_ref, width = 9, height = 6, dpi = 400, bg = "white"
+    plot = p_ref, width = 9, height = 6, dpi = 450, bg = "white"
   )
   ggplot2::ggsave(
     filename = file.path(fig_dir, "UMAP_celltype_refined.pdf"),
@@ -136,7 +136,7 @@ p_split <- DimPlot(
 
 ggplot2::ggsave(
   filename = file.path(fig_dir, "UMAP_major_celltype_split_Sample_Origin.png"),
-  plot = p_split, width = 16, height = 6, dpi = 400, bg = "white"
+  plot = p_split, width = 16, height = 6, dpi = 450, bg = "white"
 )
 
 ggplot2::ggsave(
