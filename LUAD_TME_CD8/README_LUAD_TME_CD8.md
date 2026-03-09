@@ -3,6 +3,7 @@
 
 **Author:** Myriam Yasmina Soumahoro  
 **Dataset:** GSE131907 — Kim et al., 2020 (*Nature Communications*)  
+**Period:** January – February 2026  
 **Platform:** 10x Genomics Chromium  
 **Environment:** R 4.4.1 (RStudio) — Seurat, Slingshot, CellChat  
 

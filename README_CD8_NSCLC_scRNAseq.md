@@ -2,14 +2,14 @@
 
 **Author:** Myriam Yasmina Soumahoro  
 **Master in Biology — University of Geneva**  
-**Period:** January – February 2026  
+**Period:** January – March 2026  
 **Environment:** R 4.4.1 (RStudio) — Seurat, Slingshot, CellChat  
 
 ---
 
 ## Biological Question
 
-Do CD8 T cell functional states reshaping in the lung tumor microenvironment predict immunotherapy response in NSCLC?
+Do CD8 T cell functional states in the lung tumor microenvironment associate with immunotherapy response in NSCLC?
 
 This portfolio addresses this question through two independent scRNA-seq analyses, connected by a cross-dataset synthesis based on shared CD8 exhaustion signatures.
 
@@ -19,23 +19,19 @@ This portfolio addresses this question through two independent scRNA-seq analyse
 
 ```
 CD8_NSCLC_scRNAseq/
-├── README.md                    ← README global
+├── README.md                    ← this file
 ├── LUAD_TME_CD8/
 │   ├── README.md                ← README LUAD
-│   ├── Data/
-│   ├── Objects/
 │   ├── Scripts/
 │   └── Results/
 │       ├── figures/
 │       └── markers/
 └── NSCLC_Immunotherapy_CD8/
-    ├── README.md                ← README Dataset 2
-    ├── Data/
-    ├── Objects/
+    ├── README.md                ← README Immunotherapy
     ├── Scripts/
     └── Results/
         ├── figures/
-        └── markers/
+        └── tables/
 ```
 
 ---
@@ -84,7 +80,7 @@ CD8 Subset → 4 states retained
         ↓
 Trajectory Analysis (Slingshot)
         ↓
-FFunctional Scoring (AddModuleScore)
+Functional Scoring (AddModuleScore)
 — Exhaustion Terminal Score (PDCD1, TIGIT, HAVCR2, LAG3, CTLA4, ENTPD1, LAYN, PRDM1)
         ↓
 Cell-Cell Communication (CellChat — nLung vs. tLung)
@@ -100,6 +96,7 @@ Cell-Cell Communication (CellChat — nLung vs. tLung)
 - Classical exhaustion markers (PDCD1, LAG3, HAVCR2, TOX) were not detectable at sufficient levels; narrative is reframed around TRM dysfunction (TIGIT+GZMB+)
 - CD8_TRM_Cytotoxic had only 17 cells in nLung — comparisons are interpreted descriptively
 - CellChat was run on nLung and tLung only, excluding other compartments
+- LUAD nLung vs. tLung uses a between-subject design (different patients per condition); mixed-effects modeling was therefore not applicable — Fisher's exact test used instead
 
 ---
 
@@ -110,17 +107,20 @@ Cell-Cell Communication (CellChat — nLung vs. tLung)
 
 ### Dataset Composition
 
-| Condition | Samples | CD8+ T cells |
+| Condition | Patients | CD8+ T cells |
 |---|---|---|
-| PR (Major Pathologic Response) | 10 | 15,970 |
-| SD (Non-Major Pathologic Response) | 6 | 4,349 |
-| **Total** | **15** | **20,319** |
+| MPR (Major Pathologic Response) | 3 | 5,493 |
+| NMPR (Non-Major Pathologic Response) | 10 | 12,983 |
+| **Total** | **13** | **18,476** |
 
-> 15 patients total (3 pre-treatment + 12 post-treatment). Analysis focuses on post-treatment samples stratified by pathologic response.
+> 15 patients total. 2 excluded: 1 non-evaluable, 1 pCR. 3 pre-treatment excluded.  
+> Analysis focuses on 13 post-treatment evaluable samples stratified by pathologic response  
+> (MPR/NMPR, Hu et al. 2023). Initial RECIST classification (PR/SD) was not retained  
+> as it is unsuitable for neoadjuvant contexts.
 
 ### CD8 T Cell States
 
-Seven states identified through unsupervised clustering, annotated based on top 50 differentially expressed markers:
+Eight states identified through unsupervised clustering, annotated based on top 50 differentially expressed markers:
 
 | Cluster | Function |
 |---|---|
@@ -133,7 +133,7 @@ Seven states identified through unsupervised clustering, annotated based on top 
 | CD8_Activated_HLAII_high | MHC-II-activated |
 | CD8_IFN_Stress_Response | Interferon stress response |
 
-> For cross-dataset comparisons with LUAD, clusters were mapped to 4 equivalent states:
+> For cross-dataset comparisons with LUAD, four equivalent states were retained:
 > CD8_Effector_GZMK, CD8_Exhausted_Terminal, CD8_TRM_like, CD8_Proliferating.
 
 ### Analysis Pipeline
@@ -143,55 +143,53 @@ Raw data (GSE207422)
         ↓
 Quality Control + Normalization (Seurat)
         ↓
+Pathologic response metadata mapping (MPR/NMPR — Hu et al. 2023)
+        ↓
 T cell Subclustering → CD8 Annotation (top 50 markers)
         ↓
-Differential Abundance — PR vs. SD (barplot + Fisher's exact test, BH correction)
-        ↓
-Pseudotime Trajectory (Slingshot)
+Differential Abundance — MPR vs. NMPR
+(barplot + Fisher's exact test, BH correction)
+(Wilcoxon patient-level test — underpowered, documented as limitation)
         ↓
 Exhaustion Terminal Module Score
 (PDCD1, TIGIT, HAVCR2, LAG3, CTLA4, ENTPD1, LAYN, PRDM1)
         ↓
-Cell-Cell Communication (CellChat — PR vs. SD)
+Cell-Cell Communication (CellChat — MPR vs. NMPR)
         ↓
-Cross-Dataset Synthesis (TIGIT, PDCD1, Exhaustion Score)
+Cross-Dataset Synthesis (PDCD1, Exhaustion Score)
 ```
 
 ### Key Observations
-- CD8_Exhausted_Terminal cells appear more enriched in PR compared to SD samples 
-  (Fisher's exact test, OR=32.1, p_adj<0.001), suggesting that exhausted-phenotype 
-  cells capable of PD-1 reactivation are more prevalent in responders
-- CD8_IFN_Stress_Response and CD8_Terminal_CX3CR1 are significantly enriched in SD 
-  (p_adj<0.001), pointing to dysfunctional stress-associated states in non-responders
-- CD8_Exhausted_Terminal cells show stronger predicted interactions with TAMs in SD, 
-  notably via PPIA-BSG and PTPRC-MRC1 axes
-- CCL5-CCR1 interactions are preserved in PR, consistent with maintained effector 
-  signaling in responders
-- These observations are exploratory and would require larger cohorts and functional 
-  validation
+- CD8_Exhausted_Terminal cells are significantly enriched in MPR (Fisher's exact test,
+  OR=3.36, p_adj<0.001), alongside CD8_Effector_GZMK (OR=1.55, p_adj<0.001)
+- CD8_IFN_Stress_Response, CD8_Early_Activated_NR4A_high, CD8_Activated_HLAII_high,
+  and CD8_Proliferating are significantly enriched in NMPR (p_adj<0.001)
+- Global Exhaustion Terminal Score: no significant difference MPR vs. NMPR (p=0.73),
+  consistent with exhaustion being a sub-population phenomenon
+- CellChat: stronger predicted interactions between CD8_Exhausted_Terminal and immunosuppressive TAMs in NMPR via PTPRC-MRC1; PPIA-BSG interactions shift from TAM_like in MPR to Tumor_epithelial in NMPR; CCL5-CCR1 preserved in both conditions
 
 ### Analytical Notes and Limitations
-- Small and unbalanced patient numbers (PR n=10 samples, SD n=6 samples)
-- No TCR clonotype or functional validation data available
+- Small and unbalanced patient numbers (MPR n=3, NMPR n=10)
+- Patient-level Wilcoxon tests underpowered — no significant differences detected
+- Cell-cell interaction metrics not normalized by cell count given structural imbalance
 - CD8 annotation relies on transcriptional markers only
 
 ---
 
 ## Cross-Dataset Synthesis
 
-To bridge the two analyses, TIGIT and PDCD1 expression were visualized across all four 
-conditions (nLung / tLung / PR / SD). An Exhaustion Terminal Module Score was computed 
-using the same gene signature in both datasets. A direct cross-dataset comparison of 
-CellChat interaction probabilities was attempted for CCL5–CCR1 and PPIA–BSG axes but 
-did not yield consistent directional patterns, likely reflecting differences in dataset 
-size, cell composition, and biological context. Full results are available in the 
-repository. Computational constraints required downsampling of the LUAD dataset to 
-~41,000 cells, which may have influenced cross-dataset comparisons.
+To bridge the two analyses, PDCD1 expression was visualized across all four conditions
+(nLung / tLung / MPR / NMPR). An Exhaustion Terminal Module Score was computed using
+the same gene signature in both datasets (Wilcoxon: LUAD p<0.001, ImmunoT p=0.73).
+A direct cross-dataset comparison of CellChat interaction probabilities was not pursued
+given structural differences in dataset size and cell composition between the two cohorts.
 
 **Shared exhaustion signature genes:** PDCD1, TIGIT, HAVCR2, LAG3, CTLA4, ENTPD1, LAYN, PRDM1
 
-
-The convergence of expression patterns between tLung (LUAD) and SD (immunotherapy) suggests that tumor-associated CD8 exhaustion observed in the LUAD microenvironment may carry functional relevance for immunotherapy response. This interpretation remains hypothesis-generating.
+The convergence of expression patterns between tLung (LUAD) and MPR (immunotherapy)
+suggests that tumor-associated CD8 exhaustion observed in the LUAD microenvironment
+may carry functional relevance for immunotherapy response. This interpretation remains
+hypothesis-generating and would require larger cohorts and functional validation.
 
 ---
 
@@ -203,3 +201,4 @@ The convergence of expression patterns between tLung (LUAD) and SD (immunotherap
 | Slingshot (Bioconductor) | Pseudotime trajectory |
 | CellChat (jinworks) | Cell-cell communication |
 | ggplot2 / patchwork | Visualization |
+| lme4 / lmerTest | Mixed-effects modeling (attempted, underpowered) |

@@ -97,6 +97,7 @@ p <- ggplot(df_long, aes(x = condition, y = proportion, fill = cluster)) +
     axis.text.x      = element_text(size = 12, color = "#000000"),
     axis.text.y      = element_text(size = 11, color = "#000000"),
     legend.title     = element_text(size = 11),
+    legend.text = element_text(size = 14),
     plot.title       = element_text(size = 14, face = "bold", color = "#000000"),
     plot.subtitle    = element_text(size = 11, color = "#555555", face = "italic")
   ) +
