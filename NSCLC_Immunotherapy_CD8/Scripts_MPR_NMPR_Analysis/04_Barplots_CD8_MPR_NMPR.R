@@ -59,8 +59,8 @@ p_bar <- ggplot(df_prop, aes(x = condition, y = prop, fill = cell_type)) +
   guides(fill = guide_legend(ncol = 1))
 
 ggsave(file.path(fig_dir, "04_CD8_Barplot_proportions_MPR_NMPR.png"),
-       p_bar, width = 10, height = 6, dpi = 450, bg = "white")
+       p_bar, width = 8, height = 6, dpi = 450, bg = "white")
 ggsave(file.path(fig_dir, "04_CD8_Barplot_proportions_MPR_NMPR.pdf"),
-       p_bar, width = 10, height = 6, bg = "white")
+       p_bar, width = 8, height = 6, bg = "white")
 
 cat("Done — CD8 barplot saved\n")

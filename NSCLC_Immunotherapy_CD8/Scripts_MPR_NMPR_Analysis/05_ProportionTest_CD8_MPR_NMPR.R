@@ -135,6 +135,6 @@ p <- p + geom_text(
 )
 
 ggsave(file.path(fig_dir, "05_ProportionTest_CD8_MPR_NMPR.png"),
-       p, width = 10, height = 6, dpi = 450, bg = "white")
+       p, width = 8, height = 6, dpi = 450, bg = "white")
 
 cat("\nDone\n")
