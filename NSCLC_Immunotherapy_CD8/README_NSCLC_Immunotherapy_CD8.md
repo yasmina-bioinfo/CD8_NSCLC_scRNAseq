@@ -1,5 +1,4 @@
-# Dataset 2 — Anti-PD-1 Immunotherapy Response in NSCLC (GSE207422)
-**Period:** February – March 2026  
+# Dataset 2 : Anti-PD-1 Immunotherapy Response in NSCLC (GSE207422)
 
 ## Overview
 Single-cell RNA sequencing analysis of the tumor microenvironment in non-small cell lung 
@@ -9,9 +8,7 @@ specimen: Major Pathologic Response (MPR, ≤10% residual viable tumor cells) vs
 Non-Major Pathologic Response (NMPR, >10% residual viable tumor cells), as defined 
 in Hu et al. 2023.
 
-> Initial analysis used RECIST radiological classification (PR/SD). This variable was 
-> found unsuitable for a neoadjuvant context — pathologic response provides a more 
-> biologically meaningful stratification. All analyses were repeated using MPR/NMPR.
+> Initial analysis used RECIST radiological classification (PR/SD). This variable was found unsuitable for a neoadjuvant context: pathologic response provides a more biologically meaningful stratification. All analyses were repeated using MPR/NMPR.
 
 **Publication:** Hu J, Zhang L, Xia H, Yan Y et al. Tumor microenvironment remodeling after 
 neoadjuvant immunotherapy in non-small cell lung cancer revealed by single-cell RNA sequencing.
@@ -27,8 +24,7 @@ neoadjuvant immunotherapy in non-small cell lung cancer revealed by single-cell 
 | NMPR      | 10       | 12,983       |
 | **Total** | **13**   | **18,476**   |
 
-> 15 patients total (3 pre-treatment excluded + 2 excluded: 1 non-evaluable, 1 pCR).  
-> This analysis focuses on 13 post-treatment evaluable samples stratified by pathologic response.
+> 15 patients total (3 pre-treatment excluded + 2 excluded: 1 non-evaluable, 1 pCR). This analysis focuses on 13 post-treatment evaluable samples stratified by pathologic response.
 
 ---
 
@@ -40,15 +36,14 @@ based on the top 50 differentially expressed markers per cluster:
 |---------|----------|
 | CD8_Effector_GZMK | Cytotoxic effector |
 | CD8_Exhausted_Terminal | Terminal exhaustion |
-| CD8_Terminal_CX3CR1 | Terminal exhaustion — migratory |
+| CD8_Terminal_CX3CR1 | Terminal exhaustion - migratory |
 | CD8_Proliferating | Active proliferation |
 | CD8_TRM_like | Tissue-resident memory |
 | CD8_Early_Activated_NR4A_high | Early activation |
 | CD8_Activated_HLAII_high | MHC-II-activated |
 | CD8_IFN_Stress_Response | Interferon stress response |
 
-> For cross-dataset comparisons with LUAD, four equivalent states were retained:
-> CD8_Effector_GZMK, CD8_Exhausted_Terminal, CD8_TRM_like, CD8_Proliferating.
+> For cross-dataset comparisons with LUAD, four equivalent states were retained:CD8_Effector_GZMK, CD8_Exhausted_Terminal, CD8_TRM_like, CD8_Proliferating.
 
 ---
 
@@ -71,19 +66,19 @@ based on the top 50 differentially expressed markers per cluster:
 - UMAP colored by cluster and by condition (MPR/NMPR)
 - UMAP split by pathologic response with cluster annotations
 
-### 5. Differential Abundance — MPR vs NMPR
+### 5. Differential Abundance: MPR vs NMPR
 - Barplot of CD8 cluster proportions by pathologic response
 - Fisher's exact test with BH correction on cluster proportions
 - Wilcoxon patient-level test on cluster proportions (n=13 patients)
-  — no significant differences detected, likely reflecting low statistical power (MPR n=3)
+  - no significant differences detected, likely reflecting low statistical power (MPR n=3)
 
 ### 6. Module Scores & FeaturePlots
 - Exhaustion Terminal Score (PDCD1, TIGIT, HAVCR2, LAG3, CTLA4, ENTPD1, LAYN, PRDM1)
-- FeaturePlot PDCD1 and TIGIT — MPR vs NMPR
+- FeaturePlot PDCD1 and TIGIT: MPR vs NMPR
 - Global ModuleScore: no significant difference MPR vs NMPR (Wilcoxon p=0.73),
   consistent with exhaustion being a sub-population phenomenon
 
-### 7. Cell-Cell Communication — CellChat
+### 7. Cell-Cell Communication - CellChat
 - Separate CellChat objects constructed for MPR and NMPR (`04_TME_MPR_NMPR.rds`)
 - Comparison of interaction strength and signaling patterns
 - Bubble plot: CD8_Cytotoxic_Exhausted outgoing interactions (prob > 0.05)
@@ -96,23 +91,38 @@ based on the top 50 differentially expressed markers per cluster:
   (Wilcoxon cross-dataset: LUAD p<0.001, ImmunoT p=0.73)
 - Schematic bifurcating model: CD8 remodeling under anti-PD-1 treatment
 
+### 9. TF Activity Inference: DoRothEA/decoupleR (Script 10)
+- TF activity inferred using DoRothEA network (confidence levels A-C) coupled with
+  multivariate linear model (mlm) implemented in decoupleR
+- Top 25 TFs selected by cross-cell variance to avoid confirmation bias
+- Heatmap A: TF activity by cluster x condition (MPR vs NMPR)
+- ELK4 dominant in MPR, STAT2 and CREM recurrent in NMPR across clusters
+
+### 10. Differentiation Potential: CytoTRACE (Script 11)
+- CytoTRACE scores computed from raw counts matrix
+- Transcriptional diversity used as proxy for differentiation commitment
+- CD8_Exhausted_Terminal shows higher scores in NMPR (developmental standstill)
+  vs broader distribution in MPR (bridge toward effector commitment)
+- Wilcoxon test p < 2e-16
+
+### 11. Pseudotime Trajectory: Slingshot (Script 12)
+- Trajectory inference performed on CD8_Exhausted_Terminal subset exclusively
+- MPR cells display significantly higher pseudotime values (Wilcoxon p < 2e-16)
+- NMPR cells concentrated at early pseudotime: trajectory arrest
+- MPR cells show active progression toward terminal effector engagement
+
 ---
 
 ## Key Findings
-- CD8_Exhausted_Terminal cells are significantly enriched in MPR (Fisher's exact test, 
-  OR=3.36, p_adj<0.001), suggesting that exhausted-phenotype cells capable of PD-1 
-  reactivation are more prevalent in pathologic responders
-- CD8_Effector_GZMK also enriched in MPR (OR=1.55, p_adj<0.001), indicating a 
-  co-occurrence of effector and exhausted states in responders
-- CD8_IFN_Stress_Response, CD8_Early_Activated_NR4A_high, CD8_Activated_HLAII_high, 
-  and CD8_Proliferating are significantly enriched in NMPR (p_adj<0.001), pointing to 
-  dysfunctional and activation-impaired states in non-responders
-- The Exhaustion Terminal Score does not show a significant global difference between 
-  MPR and NMPR (p=0.73) — exhaustion is a sub-population phenomenon captured at the 
-  cluster level but diluted across all CD8 states
-- CellChat: stronger predicted interactions between CD8_Exhausted_Terminal and immunosuppressive TAMs in NMPR via PTPRC-MRC1; PPIA-BSG interactions shift from TAM_like in MPR to Tumor_epithelial in NMPR; CCL5-CCR1 preserved in both conditions 
-  cells and immunosuppressive TAMs in NMPR, notably via PPIA-BSG and PTPRC-MRC1 axes
+- CD8_Exhausted_Terminal cells are significantly enriched in MPR (Fisher's exact test, OR=3.36, p_adj<0.001), suggesting that exhausted-phenotype cells capable of PD-1 reactivation are more prevalent in pathologic responders
+- CD8_Effector_GZMK also enriched in MPR (OR=1.55, p_adj<0.001), indicating a co-occurrence of effector and exhausted states in responders
+- CD8_IFN_Stress_Response, CD8_Early_Activated_NR4A_high, CD8_Activated_HLAII_high, and CD8_Proliferating are significantly enriched in NMPR (p_adj<0.001), pointing to dysfunctional and activation-impaired states in non-responders
+- The Exhaustion Terminal Score does not show a significant global difference between MPR and NMPR (p=0.73): exhaustion is a sub-population phenomenon captured at the cluster level but diluted across all CD8 states
+- CellChat: stronger predicted interactions between CD8_Exhausted_Terminal and immunosuppressive TAMs in NMPR via PTPRC-MRC1; PPIA-BSG interactions shift from TAM_like in MPR to Tumor_epithelial in NMPR; CCL5-CCR1 preserved in both conditions cells and immunosuppressive TAMs in NMPR, notably via PPIA-BSG and PTPRC-MRC1 axes
 - CCL5-CCR1 interactions are preserved in both conditions
+- DoRothEA: ELK4 identified as dominant TF in MPR within CD8_Exhausted_Terminal; STAT2 enriched in NMPR suggesting chronic IFN signaling; CREM recurrently active across NMPR clusters: hypothesis of coordinated effector repression in non-responders
+- CytoTRACE: NMPR exhausted cells show unimodal high-diversity distribution suggesting developmental standstill; MPR cells display heterogeneous scores extending toward greater differentiation commitment (Wilcoxon p<2e-16)
+- Slingshot: MPR cells advance along pseudotime trajectory; NMPR cells arrested at early stages: supports transcriptional plasticity hypothesis in responders
 
 ---
 
@@ -120,9 +130,11 @@ based on the top 50 differentially expressed markers per cluster:
 - Small patient cohort (n=13 evaluable), with marked group imbalance (MPR n=3, NMPR n=10)
 - Patient-level statistical tests (Wilcoxon) underpowered due to low MPR sample size
 - Cell-cell interaction metrics not normalized by cell count given structural imbalance
-- CD8_Exhausted_Terminal annotation based on transcriptional markers only — 
-  not validated at protein level or by functional assays
+- CD8_Exhausted_Terminal annotation based on transcriptional markers only: not validated at protein level or by functional assays
 - Cross-dataset comparisons are qualitative and hypothesis-generating
+- CytoTRACE was validated on classical developmental hierarchies; applicability to T cell exhaustion trajectories requires cautious interpretation
+- Pseudotime values are computationally inferred and do not represent observed temporal dynamics
+- TF activity inference reflects cell-level aggregates; patient-level validation would require pseudobulk approaches with balanced cohort design
 
 ---
 
@@ -143,7 +155,10 @@ Immunotherapy/
 │   ├── 05_ProportionTest_CD8_MPR_NMPR.R
 │   ├── 06_ModuleScore_Exhaustion_MPR_NMPR.R
 │   ├── 07_CellChat_MPR_NMPR_Create.R
-│   └── 07b_CellChat_MPR_NMPR_Visualization.R
+│   ├── 07b_CellChat_MPR_NMPR_Visualization.R
+│   ├── 10_TF_Activity_DoRothEA.R
+│   ├── 11_CytoTRACE_Differentiation.R
+│   └── 12_Slingshot_Pseudotime_Exhausted.R
 └── Results/
     ├── figures/
     └── tables/
@@ -156,8 +171,27 @@ Immunotherapy/
 | CellChat | jinworks/CellChat | Cell-cell communication |
 | lme4 / lmerTest | CRAN | Mixed-effects modeling (attempted, underpowered) |
 | ggplot2 / patchwork | CRAN | Visualization |
+| decoupleR | Bioconductor | TF activity inference (mlm method) |
+| CytoTRACE | GitHub | Differentiation potential estimation |
+| slingshot | Bioconductor | Pseudotime trajectory inference |
 
 ## Reference
-Hu J. et al. (2023). Tumor microenvironment remodeling after neoadjuvant immunotherapy 
-in non-small cell lung cancer revealed by single-cell RNA sequencing. 
+Hu J. et al. (2023). Tumor microenvironment remodeling after neoadjuvant immunotherapy in non-small cell lung cancer revealed by single-cell RNA sequencing. 
 *Genome Medicine*, 15, 14. https://doi.org/10.1186/s13073-023-01164-9
+
+Garcia-Alonso L. et al. (2019). Benchmark and integration of resources for the
+estimation of human transcription factor activities. Genome Research, 29(8), 1363-1375.
+https://doi.org/10.1101/gr.240663.118
+
+Badia-i-Mompel P. et al. (2022). decoupleR: ensemble of computational methods to
+infer biological activities from omics data. Bioinformatics Advances, 2(1), vbac016.
+https://doi.org/10.1093/bioadv/vbac016
+
+Gulati G.S. et al. (2020). Single-cell transcriptional diversity is a hallmark of
+developmental potential. Science, 367(6476), 405-411.
+https://doi.org/10.1126/science.aax0249
+
+Street K. et al. (2018). Slingshot: cell lineage and pseudotime inference for
+single-cell transcriptomics. BMC Genomics, 19, 477.
+https://doi.org/10.1186/s12864-018-4772-0
+

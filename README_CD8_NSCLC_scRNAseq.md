@@ -2,8 +2,8 @@
 
 **Author:** Myriam Yasmina Soumahoro  
 **Master in Biology — University of Geneva**  
-**Period:** January – March 2026  
-**Environment:** R 4.4.1 (RStudio) — Seurat, Slingshot, CellChat  
+**Period:** January – April 2026  
+**Environment:** R 4.4.1 (RStudio) — Seurat, Slingshot, CellChat, decoupleR, CytoTRACE 
 
 ---
 
@@ -113,10 +113,7 @@ Cell-Cell Communication (CellChat — nLung vs. tLung)
 | NMPR (Non-Major Pathologic Response) | 10 | 12,983 |
 | **Total** | **13** | **18,476** |
 
-> 15 patients total. 2 excluded: 1 non-evaluable, 1 pCR. 3 pre-treatment excluded.  
-> Analysis focuses on 13 post-treatment evaluable samples stratified by pathologic response  
-> (MPR/NMPR, Hu et al. 2023). Initial RECIST classification (PR/SD) was not retained  
-> as it is unsuitable for neoadjuvant contexts.
+> 15 patients total. 2 excluded: 1 non-evaluable, 1 pCR. 3 pre-treatment excluded. Analysis focuses on 13 post-treatment evaluable samples stratified by pathologic response (MPR/NMPR, Hu et al. 2023). Initial RECIST classification (PR/SD) was not retained as it is unsuitable for neoadjuvant contexts.
 
 ### CD8 T Cell States
 
@@ -157,22 +154,34 @@ Exhaustion Terminal Module Score
 Cell-Cell Communication (CellChat — MPR vs. NMPR)
         ↓
 Cross-Dataset Synthesis (PDCD1, Exhaustion Score)
+        ↓
+TF Activity Inference — DoRothEA/decoupleR (Script 10)
+(top 25 TFs by variance, confidence levels A–C, mlm method)
+        ↓
+Differentiation Potential — CytoTRACE (Script 11)
+(transcriptional diversity as proxy for differentiation commitment)
+        ↓
+Pseudotime Trajectory — Slingshot on CD8_Exhausted_Terminal (Script 12) (trajectory inference within the exhausted compartment, MPR vs NMPR)
 ```
 
 ### Key Observations
-- CD8_Exhausted_Terminal cells are significantly enriched in MPR (Fisher's exact test,
-  OR=3.36, p_adj<0.001), alongside CD8_Effector_GZMK (OR=1.55, p_adj<0.001)
-- CD8_IFN_Stress_Response, CD8_Early_Activated_NR4A_high, CD8_Activated_HLAII_high,
-  and CD8_Proliferating are significantly enriched in NMPR (p_adj<0.001)
-- Global Exhaustion Terminal Score: no significant difference MPR vs. NMPR (p=0.73),
-  consistent with exhaustion being a sub-population phenomenon
+- CD8_Exhausted_Terminal cells are significantly enriched in MPR (Fisher's exact test, OR=3.36, p_adj<0.001), alongside CD8_Effector_GZMK (OR=1.55, p_adj<0.001)
+- CD8_IFN_Stress_Response, CD8_Early_Activated_NR4A_high, CD8_Activated_HLAII_high, and CD8_Proliferating are significantly enriched in NMPR (p_adj<0.001)
+- Global Exhaustion Terminal Score: no significant difference MPR vs. NMPR (p=0.73), consistent with exhaustion being a sub-population phenomenon
 - CellChat: stronger predicted interactions between CD8_Exhausted_Terminal and immunosuppressive TAMs in NMPR via PTPRC-MRC1; PPIA-BSG interactions shift from TAM_like in MPR to Tumor_epithelial in NMPR; CCL5-CCR1 preserved in both conditions
+- DoRothEA: ELK4 dominant in MPR within CD8_Exhausted_Terminal; STAT2 enriched in NMPR suggesting chronic IFN signaling; CREM recurrently active across NMPR clusters
+- CytoTRACE: NMPR exhausted cells show developmental standstill (high diversity scores); MPR cells display heterogeneous scores — a bridge toward effector commitment (p<2e-16)
+- Slingshot: MPR cells advance along pseudotime trajectory; NMPR cells arrested at early stages — supports transcriptional plasticity hypothesis in responders (p<2e-16)
 
 ### Analytical Notes and Limitations
 - Small and unbalanced patient numbers (MPR n=3, NMPR n=10)
 - Patient-level Wilcoxon tests underpowered — no significant differences detected
 - Cell-cell interaction metrics not normalized by cell count given structural imbalance
 - CD8 annotation relies on transcriptional markers only
+- CytoTRACE validated on developmental hierarchies; interpretation in T cell exhaustion context requires caution
+- Pseudotime values computationally inferred, not observed temporal dynamics
+- TF activity reflects cell-level aggregates; patient-level validation requires pseudobulk approaches with balanced cohort design
+- No post-treatment bulk RNA-seq cohort with annotated anti-PD-1 response in NSCLC could be identified for independent validation
 
 ---
 
@@ -191,6 +200,8 @@ suggests that tumor-associated CD8 exhaustion observed in the LUAD microenvironm
 may carry functional relevance for immunotherapy response. This interpretation remains
 hypothesis-generating and would require larger cohorts and functional validation.
 
+A regulatory analysis extending the scRNA-seq landscape analysis was conducted on the Immunotherapy dataset (GSE207422), integrating TF activity inference (DoRothEA/decoupleR), differentiation potential estimation (CytoTRACE), and pseudotime trajectory analysis (Slingshot): converging toward a transcriptional plasticity hypothesis as a determinant of anti-PD-1 response.
+
 ---
 
 ## Main Packages
@@ -202,3 +213,7 @@ hypothesis-generating and would require larger cohorts and functional validation
 | CellChat (jinworks) | Cell-cell communication |
 | ggplot2 / patchwork | Visualization |
 | lme4 / lmerTest | Mixed-effects modeling (attempted, underpowered) |
+| decoupleR (Bioconductor) | TF activity inference (mlm method) |
+| CytoTRACE (GitHub) | Differentiation potential estimation |
+| slingshot (Bioconductor) | Pseudotime trajectory inference |
+| ggrepel (CRAN) | Non-overlapping labels on UMAP |
