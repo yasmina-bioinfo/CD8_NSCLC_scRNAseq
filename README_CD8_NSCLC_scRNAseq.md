@@ -1,3 +1,6 @@
+> **New project:** [TumorImmune_Crosstalk_LUAD](https://github.com/yasmina-bioinfo/TumorImmune_Crosstalk_LUAD)
+> — extending this work to GSE243013 (n=61 LUAD) with ProjecTILs, UCell, scRepertoire and CollecTRI.
+
 # CD8 T Cell Functional States in Lung Cancer — A Two-Dataset scRNA-seq Portfolio
 
 **Author:** Myriam Yasmina Soumahoro  
